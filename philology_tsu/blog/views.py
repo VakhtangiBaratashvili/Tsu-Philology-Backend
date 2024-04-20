@@ -56,3 +56,16 @@ class GetAllPostsByUserView(APIView):
         posts = Post.objects.filter(user=payload['id'])
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+    
+class GetPostByIdView(APIView):
+    
+    def get(self, request, post_id):
+        post = Post.objects.filter(id=post_id).first()
+        if not post:
+            return Response(
+                {
+                    'error': f'Post with id {post_id} not found'
+                }, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = PostSerializer(post)
+        return Response(serializer.data)
